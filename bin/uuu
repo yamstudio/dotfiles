@@ -18,7 +18,7 @@ upgrade_pip() {
   fi
 
   echo $PIP_PACKAGES | xargs -n1 echo "  [*] Package to upgrade:"
-  echo $PIP_PACKAGES | xargs -n1 sudo -H $PIP install --upgrade {} \
+  echo $PIP_PACKAGES | xargs -I{} -n1 sudo -H $PIP install --upgrade {} \
     >/dev/null 2>&1
   echo "  [+] Done."
 }
