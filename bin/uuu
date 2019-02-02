@@ -1,0 +1,104 @@
+#!/usr/bin/env zsh
+# This script upgrades pip, tlmgr and brew packages.
+
+upgrade_pip() {
+  echo "[*] Doing pip upgrade..."
+
+  PIP=$(which pip3 2>/dev/null)
+  if [ $? != 0 ]; then
+    echo "  [-] Cannot find pip3 in $PATH."
+    return 1
+  fi
+
+  PIP_PACKAGES=$(sudo -H $PIP list --outdated --format=freeze \
+    | grep -v '^\-e' | cut -d = -f 1)
+  if [ -z $PIP_PACKAGES ]; then
+    echo "  [+] Nothing to do."
+    return 0
+  fi
+
+  echo $PIP_PACKAGES | xargs -n1 echo "  [*] Package to upgrade:"
+  echo $PIP_PACKAGES | xargs -I{} -n1 sudo -H $PIP install --upgrade {} \
+    >/dev/null 2>&1
+  echo "  [+] Done."
+}
+
+upgrade_tlmgr() {
+  echo "[*] Doing tlmgr upgrade..."
+
+  TLMGR=$(which tlmgr 2>/dev/null)
+  if [ $? != 0 ]; then
+    echo "  [-] Cannot find tlmgr in $PATH."
+    return 1
+  fi
+
+  echo "  [*] Updating self..."
+  sudo -H $TLMGR update --self >/dev/null 2>&1
+
+  echo "  [*] Upgrading packages..."
+  TLMGR_START=false
+  TLMGR_PACKAGES=""
+  while read -r line; do
+    if [ $line = "end-of-header" ]; then
+      TLMGR_START=true
+      continue
+    fi
+    if [ $line = "end-of-updates" ]; then
+      unset TLMGR_START
+      break
+    fi
+    if [ $TLMGR_START = true ]; then
+      package=$(echo $line | grep -o "^\S*")
+      echo "    [*] Package to upgrade: $package"
+      TLMGR_PACKAGES+=" $package"
+    fi
+  done <<< $($TLMGR update --all --list --machine-readable)
+
+  if [ -z $TLMGR_PACKAGES ]; then
+    echo "    [+] Nothing to do."
+    return 0
+  fi
+
+  sudo -H $TLMGR update $(echo $TLMGR_PACKAGES) >/dev/null 2>&1
+  echo "  [+] Done."
+}
+
+upgrade_brew() {
+  echo "[*] Doing brew upgrade..."
+
+  BREW=$(which brew 2>/dev/null)
+  if [ $? != 0 ]; then
+    echo "  [-] Cannot find brew in $PATH."
+    return 1
+  fi
+
+  echo "  [*] Updating formulae..."
+  $BREW update >/dev/null 2>&1 
+
+  echo "  [*] Upgrading packages..."
+  BREW_PACKAGES=$($BREW outdated)
+  if [ -z $BREW_PACKAGES ]; then
+    echo "    [+] Nothing to do."
+  else
+    echo $BREW_PACKAGES | xargs -n1 echo "    [*] Package to upgrade:"
+    $BREW upgrade $(echo $BREW_PACKAGES | tr "\n" " ") >/dev/null 2>&1
+  fi
+
+  echo "  [*] Upgrading Cask packages..."
+  BREW_CASK_PACKAGES=$($BREW cask outdated)
+  if [ -z $BREW_CASK_PACKAGES ]; then
+    echo "    [+] Nothing to do."
+  else
+    echo $BREW_CASK_PACKAGES | xargs -n1 echo "    [*] Package to upgrade:"
+    $BREW cask upgrade $(echo $BREW_CASK_PACKAGES | tr "\n" " ") >/dev/null 2>&1
+  fi
+
+  echo "  [*] Doing cleanup..."
+  $BREW cleanup >/dev/null 2>&1
+
+  echo "  [+] Done."
+}
+ 
+upgrade_pip
+upgrade_tlmgr
+upgrade_brew
