@@ -73,4 +73,6 @@
     },
   ],
   "latex-workshop.view.pdf.viewer": "tab",
+  "workbench.statusBar.feedback.visible": false,
+  "workbench.startupEditor": "newUntitledFile",
 }
