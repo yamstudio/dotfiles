@@ -10,7 +10,7 @@ upgrade_pip() {
     return 1
   fi
 
-  PIP_PACKAGES=$(sudo -H $PIP list --outdated --format=freeze \
+  PIP_PACKAGES=$($PIP list --outdated --format=freeze \
     | grep -v '^\-e' | cut -d = -f 1)
   if [ -z $PIP_PACKAGES ]; then
     echo "  [+] Nothing to do."
@@ -18,7 +18,7 @@ upgrade_pip() {
   fi
 
   echo $PIP_PACKAGES | xargs -n1 echo "  [*] Package to upgrade:"
-  echo $PIP_PACKAGES | xargs -I{} -n1 sudo -H $PIP install --upgrade {} \
+  echo $PIP_PACKAGES | xargs -I{} -n1 $PIP install --upgrade {} \
     >/dev/null 2>&1
   echo "  [+] Done."
 }
@@ -99,6 +99,6 @@ upgrade_brew() {
   echo "  [+] Done."
 }
  
-upgrade_pip
 upgrade_tlmgr
+upgrade_pip
 upgrade_brew
