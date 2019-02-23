@@ -102,7 +102,10 @@ export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 BROWN_SSH=$(echo @ssh.cs.brown.edu | sed "s/^/yqin/")
+CCV_SSH=$(echo @ssh.ccv.brown.edu | sed "s/^/guest382/")
 alias ssh_yqin="/usr/bin/ssh -t $BROWN_SSH verbose"
 alias sftp_yqin="/usr/bin/sftp $BROWN_SSH"
+alias ssh_ccv="/usr/bin/ssh -t $CCV_SSH"
+alias sftp_ccv="/usr/bin/sftp $CCV_SSH"
 
 eval $(thefuck --alias)
