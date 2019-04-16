@@ -1,5 +1,29 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
+function _add_to_path() {
+  dir=$1
+  if [[ -z $dir ]]; then
+      echo "_add_to_path parameter is empty!"
+      return 1
+  fi
+
+  if [[ ! -e $dir ]]; then
+      echo "$dir does not exist!"
+      return 1
+  fi
+
+  if [[ ! -d $dir ]]; then
+      echo "$dir is not a directory!"
+      return 1
+  fi
+
+  if [[ $PATH =~ $dir ]]; then
+      echo "$dir is already in \$PATH."
+  else
+      echo "Adding $dir to \$PATH..."
+      export PATH="$dir:$PATH"
+  fi
+}
 
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
@@ -72,8 +96,6 @@ source $ZSH/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # User configuration
 export CLICOLOR=1
 export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
-export PATH="/usr/local/cross/bin:$PATH"
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
@@ -105,7 +127,41 @@ BROWN_SSH=$(echo @ssh.cs.brown.edu | sed "s/^/yqin/")
 CCV_SSH=$(echo @ssh.ccv.brown.edu | sed "s/^/guest382/")
 alias ssh_yqin="/usr/bin/ssh -t $BROWN_SSH verbose"
 alias sftp_yqin="/usr/bin/sftp $BROWN_SSH"
+alias syp="ssh_yqin host=poundcake"
+alias syq="ssh_yqin host=quartz"
+alias sy6="ssh_yqin host=cslab6e"
 alias ssh_ccv="/usr/bin/ssh -t $CCV_SSH"
 alias sftp_ccv="/usr/bin/sftp $CCV_SSH"
 
-eval $(thefuck --alias)
+# Machine specific settings
+case `uname` in
+  Darwin)
+    echo "Applying macOS specific settings..."
+    # adds MATLAB to $PATH (newest version if multiple are present)
+    matlab_path=$(find "/Applications" -maxdepth 1 -type d -name "MATLAB_R*.app" 2>/dev/null | sort -r | head -n 1)
+    if [[ ! -z $matlab_path ]]; then
+      _add_to_path "$matlab_path/bin"
+    fi
+
+    # adds CUDA Toolkit to $PATH
+    cuda_path=$(find "/Developer/NVIDIA" -maxdepth 1 -type d -name "CUDA-*" 2>/dev/null | sort -r | head -n 1)
+    if [[ ! -z $cuda_path ]]; then
+      _add_to_path "$cuda_path/bin"
+    fi
+
+    # adds cross compiler to $PATH
+    _add_to_path "/usr/local/cross/bin"
+
+    # adds Homebrew executables to $PATH
+    _add_to_path "/usr/local/sbin"
+
+    # sets JAVA_HOME
+    export JAVA_HOME=$(/usr/libexec/java_home)
+
+    # activates thefuck
+    eval $(thefuck --alias)
+    ;;
+esac
+
+# Cleanup
+unset -f _add_to_path
