@@ -1,0 +1,16 @@
+[core]
+  editor = vim
+[push]
+  default = matching
+[filter "lfs"]
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
+[user]
+  name = Yujun Qin
+  email = yamstudio@users.noreply.github.com
+[pull]
+  rebase = false
+[url "ssh://git@github.com/"]
+  insteadOf = https://github.com/
