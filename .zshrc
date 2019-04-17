@@ -164,8 +164,7 @@ case `uname` in
   Linux)
     # TODO: find a better way to determine which machine I'm on
     case `awk -F= '$1=="ID" { print $2 ;}' /etc/os-release` in
-      debian)
-      "debian")
+      debian|"debian")
         echo "Applying Brown CS settings..."
         SSHAGENT=/usr/bin/ssh-agent
         SSHAGENTARGS="-s"
@@ -189,12 +188,10 @@ case `uname` in
 
         export LESS=eFRX
         ;;
-      rhel)
-      "rhel")
+      rhel|"rhel")
         echo "Applying CCV settings..."
         ;;
-      centos)
-      "centos")
+      centos|"centos")
         echo "Applying Azure settings..."
         ;;
       esac
