@@ -133,10 +133,10 @@ alias sy6="ssh_yqin host=cslab6e"
 alias ssh_ccv="/usr/bin/ssh -t $CCV_SSH"
 alias sftp_ccv="/usr/bin/sftp $CCV_SSH"
 
-# Machine specific settings
+# Machine specific configuration
 case `uname` in
   Darwin)
-    echo "Applying macOS settings..."
+    echo "Applying macOS configuration..."
     # adds MATLAB to $PATH (newest version if multiple are present)
     matlab_path=$(find "/Applications" -maxdepth 1 -type d -name "MATLAB_R*.app" 2>/dev/null | sort -r | head -n 1)
     if [[ ! -z $matlab_path ]]; then
@@ -162,7 +162,7 @@ case `uname` in
     eval $(thefuck --alias)
     ;;
   Linux)
-    echo "Applying Linux settings..."
+    echo "Applying Linux configuration..."
     SSHAGENT=/usr/bin/ssh-agent
     SSHAGENTARGS="-s"
     if [ -z "$SSH_AUTH_SOCK" -a -x "$SSHAGENT" ]; then
@@ -175,7 +175,7 @@ case `uname` in
     # TODO: find a better way to determine which machine I'm on
     case `awk -F= '$1=="ID" { print $2 ;}' /etc/os-release` in
       debian|\"debian\")
-        echo "Applying Brown CS settings..."
+        echo "Applying Brown CS configuration..."
 
         alias sourcetf="source /course/cs146/public/cs146-env/bin/activate"
         alias sourcetfg="source /course/cs146/public/cs146-gpu-env/bin/activate"
@@ -191,11 +191,11 @@ case `uname` in
         fi
         ;;
       rhel|\"rhel\")
-        echo "Applying CCV settings..."
+        echo "Applying CCV configuration..."
         module load mpi clang tmux cuda/9.0.176 cudnn/7.0 python/3.5.2 tensorflow/1.5.0_gpu_py3
         ;;
       centos|\"centos\")
-        echo "Applying Azure settings..."
+        echo "Applying Azure configuration..."
         ;;
       esac
     ;;
