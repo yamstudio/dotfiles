@@ -136,7 +136,7 @@ alias sftp_ccv="/usr/bin/sftp $CCV_SSH"
 # Machine specific settings
 case `uname` in
   Darwin)
-    echo "Applying macOS specific settings..."
+    echo "Applying macOS settings..."
     # adds MATLAB to $PATH (newest version if multiple are present)
     matlab_path=$(find "/Applications" -maxdepth 1 -type d -name "MATLAB_R*.app" 2>/dev/null | sort -r | head -n 1)
     if [[ ! -z $matlab_path ]]; then
@@ -162,27 +162,42 @@ case `uname` in
     eval $(thefuck --alias)
     ;;
   Linux)
-    SSHAGENT=/usr/bin/ssh-agent
-    SSHAGENTARGS="-s"
-    if [ -z "$SSH_AUTH_SOCK" -a -x "$SSHAGENT" ]; then
-	    eval `$SSHAGENT $SSHAGENTARGS`
-	    trap "kill $SSH_AGENT_PID" 0
-    fi
+    # TODO: find a better way to determine which machine I'm on
+    case `awk -F= '$1=="ID" { print $2 ;}' /etc/os-release` in
+      debian)
+      "debian")
+        echo "Applying Brown CS settings..."
+        SSHAGENT=/usr/bin/ssh-agent
+        SSHAGENTARGS="-s"
+        if [ -z "$SSH_AUTH_SOCK" -a -x "$SSHAGENT" ]; then
+	        eval `$SSHAGENT $SSHAGENTARGS`
+	        trap "kill $SSH_AGENT_PID" 0
+        fi
 
-    alias sourcetf="source /course/cs146/public/cs146-env/bin/activate"
-    alias sourcetfg="source /course/cs146/public/cs146-gpu-env/bin/activate"
-    CS146_BASE_DIR="$HOME/course/cs146"
-    if [[ -d $CS146_BASE_DIR ]]; then
-      CS146_BRANCH="$(git --git-dir $CS146_BASE_DIR/.git branch | grep \* | cut -d ' ' -f2)"
-      CS146_PROJECT_DIR="$CS146_BASE_DIR/$CS146_BRANCH"
-      if [[ -d $CS146_PROJECT_DIR ]]; then
-        echo "CS146 project directory is $CS146_PROJECT_DIR."
-        alias cd146="cd $CS146_PROJECT_DIR; sourcetf"
-        alias cd146g="cd $CS146_PROJECT_DIR; sourcetfg"
-      fi
-    fi
+        alias sourcetf="source /course/cs146/public/cs146-env/bin/activate"
+        alias sourcetfg="source /course/cs146/public/cs146-gpu-env/bin/activate"
+        CS146_BASE_DIR="$HOME/course/cs146"
+        if [[ -d $CS146_BASE_DIR ]]; then
+          CS146_BRANCH="$(git --git-dir $CS146_BASE_DIR/.git branch | grep \* | cut -d ' ' -f2)"
+          CS146_PROJECT_DIR="$CS146_BASE_DIR/$CS146_BRANCH"
+          if [[ -d $CS146_PROJECT_DIR ]]; then
+            echo "CS146 project directory is $CS146_PROJECT_DIR."
+            alias cd146="cd $CS146_PROJECT_DIR; sourcetf"
+            alias cd146g="cd $CS146_PROJECT_DIR; sourcetfg"
+          fi
+        fi
 
-    export LESS=eFRX
+        export LESS=eFRX
+        ;;
+      rhel)
+      "rhel")
+        echo "Applying CCV settings..."
+        ;;
+      centos)
+      "centos")
+        echo "Applying Azure settings..."
+        ;;
+      esac
     ;;
 esac
 
