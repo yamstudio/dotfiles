@@ -162,16 +162,20 @@ case `uname` in
     eval $(thefuck --alias)
     ;;
   Linux)
+    echo "Applying Linux settings..."
+    SSHAGENT=/usr/bin/ssh-agent
+    SSHAGENTARGS="-s"
+    if [ -z "$SSH_AUTH_SOCK" -a -x "$SSHAGENT" ]; then
+      eval `$SSHAGENT $SSHAGENTARGS`
+	  trap "kill $SSH_AGENT_PID" 0
+    fi
+
+    export LESS=eFRX
+
     # TODO: find a better way to determine which machine I'm on
     case `awk -F= '$1=="ID" { print $2 ;}' /etc/os-release` in
       debian|\"debian\")
         echo "Applying Brown CS settings..."
-        SSHAGENT=/usr/bin/ssh-agent
-        SSHAGENTARGS="-s"
-        if [ -z "$SSH_AUTH_SOCK" -a -x "$SSHAGENT" ]; then
-	        eval `$SSHAGENT $SSHAGENTARGS`
-	        trap "kill $SSH_AGENT_PID" 0
-        fi
 
         alias sourcetf="source /course/cs146/public/cs146-env/bin/activate"
         alias sourcetfg="source /course/cs146/public/cs146-gpu-env/bin/activate"
@@ -185,11 +189,10 @@ case `uname` in
             alias cd146g="cd $CS146_PROJECT_DIR; sourcetfg"
           fi
         fi
-
-        export LESS=eFRX
         ;;
       rhel|\"rhel\")
         echo "Applying CCV settings..."
+        module load mpi clang tmux cuda/9.0.176 cudnn/7.0 python/3.5.2 tensorflow/1.5.0_gpu_py3
         ;;
       centos|\"centos\")
         echo "Applying Azure settings..."
