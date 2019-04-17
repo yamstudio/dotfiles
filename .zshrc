@@ -165,21 +165,21 @@ case `uname` in
     SSHAGENT=/usr/bin/ssh-agent
     SSHAGENTARGS="-s"
     if [ -z "$SSH_AUTH_SOCK" -a -x "$SSHAGENT" ]; then
-	  eval `$SSHAGENT $SSHAGENTARGS`
-	  trap "kill $SSH_AGENT_PID" 0
+	    eval `$SSHAGENT $SSHAGENTARGS`
+	    trap "kill $SSH_AGENT_PID" 0
     fi
 
     alias sourcetf="source /course/cs146/public/cs146-env/bin/activate"
     alias sourcetfg="source /course/cs146/public/cs146-gpu-env/bin/activate"
     CS146_BASE_DIR="$HOME/course/cs146"
     if [[ -d $CS146_BASE_DIR ]]; then
-        CS146_BRANCH="$(git --git-dir $CS146_BASE_DIR/.git branch | grep \* | cut -d ' ' -f2)"
-        CS146_PROJECT_DIR="$CS146_BASE_DIR/$CS146_BRANCH"
-        if [[ -d $CS146_PROJECT_DIR ]]; then
-            echo "CS146 project directory is $CS146_PROJECT_DIR."
-            alias cd146="cd $CS146_PROJECT_DIR; sourcetf"
-            alias cd146g="cd $CS146_PROJECT_DIR; sourcetfg"
-        fi
+      CS146_BRANCH="$(git --git-dir $CS146_BASE_DIR/.git branch | grep \* | cut -d ' ' -f2)"
+      CS146_PROJECT_DIR="$CS146_BASE_DIR/$CS146_BRANCH"
+      if [[ -d $CS146_PROJECT_DIR ]]; then
+        echo "CS146 project directory is $CS146_PROJECT_DIR."
+        alias cd146="cd $CS146_PROJECT_DIR; sourcetf"
+        alias cd146g="cd $CS146_PROJECT_DIR; sourcetfg"
+      fi
     fi
 
     export LESS=eFRX
