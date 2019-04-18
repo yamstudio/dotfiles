@@ -125,6 +125,7 @@ export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 BROWN_SSH=$(echo @ssh.cs.brown.edu | sed "s/^/yqin/")
 CCV_SSH=$(echo @ssh.ccv.brown.edu | sed "s/^/guest382/")
+AZURE_SSH=$(echo @yamstudio.westus.cloudapp.azure.com | sed "s/^/yqin/")
 alias ssh_yqin="/usr/bin/ssh -t $BROWN_SSH verbose"
 alias sftp_yqin="/usr/bin/sftp $BROWN_SSH"
 alias syp="ssh_yqin host=poundcake"
@@ -132,6 +133,8 @@ alias syq="ssh_yqin host=quartz"
 alias sy6="ssh_yqin host=cslab6e"
 alias ssh_ccv="/usr/bin/ssh -t $CCV_SSH"
 alias sftp_ccv="/usr/bin/sftp $CCV_SSH"
+alias ssh_azure="/usr/bin/ssh $AZURE_SSH"
+alias sftp_azure="/usr/bin/sftp $AZURE_SSH"
 
 # Machine specific configuration
 case `uname` in
