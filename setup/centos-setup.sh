@@ -4,4 +4,4 @@ if [[ -z $DOTFILES ]]; then
   DOTFILES="$HOME/.dotfiles"
 fi
 
-echo "[+] Hi CentOS, using dotfiles at $DOTFILES."
+>&2 echo "[+] Hi CentOS, using dotfiles at $DOTFILES."

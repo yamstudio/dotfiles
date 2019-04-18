@@ -1,25 +1,25 @@
 #!/usr/bin/env sh
 
-echo "[*] Setting up dotfiles..."
+>&2 echo "[*] Setting up dotfiles..."
 
 GIT=$(which git)
 if [[ -z $GIT ]]; then
-  echo "  [-] Please install git first!"
+  >&2 echo "  [-] Please install git first!"
   exit 1
 fi
 
 ZSH=$(which zsh)
 if [[ -z $ZSH ]]; then
-  echo "  [-] Please install zsh first!"
+  >&2 echo "  [-] Please install zsh first!"
   exit 1
 fi
 
 # changes shell 
 if [[ $(basename $SHELL) != "zsh" ]]; then
-  echo "  [*] Changing shell to $ZSH..."
+  >&2 echo "  [*] Changing shell to $ZSH..."
   chsh -s $ZSH
 else
-  echo "  [+] $ZSH is the default shell."
+  >&2 echo "  [+] $ZSH is the default shell."
 fi
 
 function _get_git()
@@ -27,11 +27,11 @@ function _get_git()
   dir=$1
   name=$2
   repo=$3
-  echo "  [*] Getting $name..."
+  >&2 echo "  [*] Getting $name..."
   if [[ -e $dir ]]; then
-    echo "    [+] $dir already exists!"
+    >&2 echo "    [+] $dir already exists!"
   else
-    echo "    [*] $name will be fetched from $repo into $dir."
+    >&2 echo "    [*] $name will be fetched from $repo into $dir."
     $GIT clone "$repo" "$dir"
   fi
 }
@@ -54,9 +54,9 @@ function _link_file()
   target=$2
   BACKUP_DIR=$DOTFILES/backup
   do_link=1
-  echo "  [*] Handling $source..."
+  >&2 echo "  [*] Handling $source..."
   if [[ -e $target ]]; then
-    echo "    [*] $target already exists. Overwrite [y/n]?"
+    >&2 echo "    [*] $target already exists. Overwrite [y/n]?"
     do_link=0
     okay=0
     while [ $okay = 0 ]; do
@@ -65,24 +65,24 @@ function _link_file()
       case $yn in
         y | yes | Y | YES )
           backup="$BACKUP_DIR/$(basename $target).old"
-          echo "    [+] Okay, old $target will be moved to $backup."
+          >&2 echo "    [+] Okay, old $target will be moved to $backup."
           mkdir -p $BACKUP_DIR
           mv "$target" "$backup"
           do_link=1
           ;;
         n | no | N | NO )
-          echo "    [+] $source is skipped."
+          >&2 echo "    [+] $source is skipped."
           do_link=0
           ;;
         *)
           okay=0
-          echo "    [-] Invalid response! Overwrite [y/n]?"
+          >&2 echo "    [-] Invalid response! Overwrite [y/n]?"
           ;;
       esac
     done
   fi
   if [[ $do_link = 1 ]]; then
-    echo "    [*] Linking $source to $target..."
+    >&2 echo "    [*] Linking $source to $target..."
     ln -s "$source" "$target"
   fi
 }
