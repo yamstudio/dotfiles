@@ -38,15 +38,15 @@ function _get_git()
 
 # gets .dotfiles
 DOTFILES=$HOME/.dotfiles
-_get_git $DOTFILES "dotfiles" "git@github.com:yamstudio/dotfiles.git"
+_get_git $DOTFILES "dotfiles" "https://github.com/yamstudio/dotfiles.git"
 
 # gets .oh-my-zsh
 OH_MY_ZSH=$HOME/.oh-my-zsh
-_get_git $OH_MY_ZSH "oh-my-zsh" "git@github.com:robbyrussell/oh-my-zsh.git"
+_get_git $OH_MY_ZSH "oh-my-zsh" "https://github.com/robbyrussell/oh-my-zsh.git"
 
 # gets zsh-syntax-highlighting
 ZSH_SYNTAX=$OH_MY_ZSH/custom/plugins/zsh-syntax-highlighting
-_get_git $ZSH_SYNTAX "zsh-syntax-highlighting" "git@github.com:zsh-users/zsh-syntax-highlighting.git"
+_get_git $ZSH_SYNTAX "zsh-syntax-highlighting" "https://github.com/zsh-users/zsh-syntax-highlighting.git"
 
 function _link_file()
 {
