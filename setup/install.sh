@@ -91,7 +91,7 @@ function _link_file()
 _link_file "$DOTFILES/.vimrc" "$HOME/.vimrc"
 
 # links .zshrc
-_link_file "$DOTFILES/.vimrc" "$HOME/.vimrc"
+_link_file "$DOTFILES/.zshrc" "$HOME/.zshrc"
 
 # links .gitconfig
 _link_file "$DOTFILES/.gitconfig" "$HOME/.gitconfig"
