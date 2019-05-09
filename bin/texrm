@@ -19,7 +19,13 @@ while read -r tex; do
     -o -iname $tex_name.synctex.gz \
     -o -iname $tex_name.aux \
     -o -iname $tex_name.log \
-    -o -iname $tex_name.xdv \) \
+    -o -iname $tex_name.xdv \
+    -o -iname $tex_name.bbl \
+    -o -iname $tex_name.blg \
+    -o -iname $tex_name.nav \
+    -o -iname $tex_name.out \
+    -o -iname $tex_name.snm \
+    -o -iname $tex_name.toc \) \
     -exec echo "    [*] Deleting" {}"..." \; \
     -delete
 done <<< $(find ./ -maxdepth $MAX_DEPTH -type f -name "*.tex")
