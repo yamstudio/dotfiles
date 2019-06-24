@@ -197,6 +197,9 @@ case `uname` in
       centos|\"centos\")
         echo "Applying Azure configuration..."
         ;;
+      arch|\"arch\")
+        echo "Applying WSL configuration..."
+        _add_to_path "/usr/local/cross/bin"
       esac
     ;;
 esac
