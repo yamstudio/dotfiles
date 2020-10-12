@@ -123,18 +123,6 @@ export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-BROWN_SSH=$(echo @ssh.cs.brown.edu | sed "s/^/yqin/")
-CCV_SSH=$(echo @ssh.ccv.brown.edu | sed "s/^/guest382/")
-AZURE_SSH=$(echo @yamstudio.westus.cloudapp.azure.com | sed "s/^/yqin/")
-alias ssh_yqin="/usr/bin/ssh -t $BROWN_SSH verbose"
-alias sftp_yqin="/usr/bin/sftp $BROWN_SSH"
-alias syp="ssh_yqin host=poundcake"
-alias syq="ssh_yqin host=quartz"
-alias sy6="ssh_yqin host=cslab6e"
-alias ssh_ccv="/usr/bin/ssh -t $CCV_SSH"
-alias sftp_ccv="/usr/bin/sftp $CCV_SSH"
-alias ssh_azure="/usr/bin/ssh $AZURE_SSH"
-alias sftp_azure="/usr/bin/sftp $AZURE_SSH"
 
 # Machine specific configuration
 case `uname` in
@@ -177,29 +165,29 @@ case `uname` in
 
     # TODO: find a better way to determine which machine I'm on
     case `awk -F= '$1=="ID" { print $2 ;}' /etc/os-release` in
-      debian|\"debian\")
-        echo "Applying Brown CS configuration..."
+      # debian|\"debian\")
+      #   echo "Applying Brown CS configuration..."
 
-        alias sourcetf="source /course/cs146/public/cs146-env/bin/activate"
-        alias sourcetfg="source /course/cs146/public/cs146-gpu-env/bin/activate"
-        CS146_BASE_DIR="$HOME/course/cs146"
-        if [[ -d $CS146_BASE_DIR ]]; then
-          CS146_BRANCH="$(git --git-dir $CS146_BASE_DIR/.git branch | grep \* | cut -d ' ' -f2)"
-          CS146_PROJECT_DIR="$CS146_BASE_DIR/$CS146_BRANCH"
-          if [[ -d $CS146_PROJECT_DIR ]]; then
-            echo "CS146 project directory is $CS146_PROJECT_DIR."
-            alias cd146="cd $CS146_PROJECT_DIR; sourcetf"
-            alias cd146g="cd $CS146_PROJECT_DIR; sourcetfg"
-          fi
-        fi
-        ;;
-      rhel|\"rhel\")
-        echo "Applying CCV configuration..."
-        module load mpi clang tmux cuda/9.0.176 cudnn/7.0 python/3.5.2 tensorflow/1.5.0_gpu_py3
-        ;;
-      centos|\"centos\")
-        echo "Applying Azure configuration..."
-        ;;
+      #   alias sourcetf="source /course/cs146/public/cs146-env/bin/activate"
+      #   alias sourcetfg="source /course/cs146/public/cs146-gpu-env/bin/activate"
+      #   CS146_BASE_DIR="$HOME/course/cs146"
+      #   if [[ -d $CS146_BASE_DIR ]]; then
+      #     CS146_BRANCH="$(git --git-dir $CS146_BASE_DIR/.git branch | grep \* | cut -d ' ' -f2)"
+      #     CS146_PROJECT_DIR="$CS146_BASE_DIR/$CS146_BRANCH"
+      #     if [[ -d $CS146_PROJECT_DIR ]]; then
+      #       echo "CS146 project directory is $CS146_PROJECT_DIR."
+      #       alias cd146="cd $CS146_PROJECT_DIR; sourcetf"
+      #       alias cd146g="cd $CS146_PROJECT_DIR; sourcetfg"
+      #     fi
+      #   fi
+      #   ;;
+      # rhel|\"rhel\")
+      #   echo "Applying CCV configuration..."
+      #   module load mpi clang tmux cuda/9.0.176 cudnn/7.0 python/3.5.2 tensorflow/1.5.0_gpu_py3
+      #   ;;
+      # centos|\"centos\")
+      #   echo "Applying Azure configuration..."
+      #   ;;
       arch|\"arch\")
         echo "Applying WSL configuration..."
         _add_to_path "/usr/local/cross/bin"
