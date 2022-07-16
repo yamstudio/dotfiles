@@ -3,6 +3,7 @@
   "editor.fontSize": 14,
   "editor.insertSpaces": true,
   "editor.detectIndentation": false,
+  "editor.suggestSelection": "first",
   "editor.tabSize": 4,
   "[makefile]": {
     "editor.insertSpaces": false,
@@ -20,6 +21,7 @@
     "editor.tabSize": 2,
   },
   "workbench.settings.editor": "json",
+  "workbench.startupEditor": "newUntitledFile",
   "latex-workshop.latex.tools": [
     {
       "name": "latexmk",
@@ -76,6 +78,16 @@
     },
   ],
   "latex-workshop.view.pdf.viewer": "tab",
-  "workbench.statusBar.feedback.visible": false,
-  "workbench.startupEditor": "newUntitledFile",
+  "leetcode.defaultLanguage": "csharp",
+  "leetcode.hint.configWebviewMarkdown": false,
+  "leetcode.hint.commentDescription": false,
+  "leetcode.hint.setDefaultLanguage": false,
+  "leetcode.hint.commandShortcut": false,
+  "leetcode.filePath": {
+    "default": {
+      "folder": "${language}",
+      "filename": "${id}.${kebab-case-name}.${ext}",
+    },
+  },
+  "leetcode.workspaceFolder": "/home/yqin/source/repos/leetcode"
 }
