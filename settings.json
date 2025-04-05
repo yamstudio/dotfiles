@@ -4,21 +4,9 @@
   "editor.insertSpaces": true,
   "editor.detectIndentation": false,
   "editor.suggestSelection": "first",
-  "editor.tabSize": 4,
+  "editor.tabSize": 2,
   "[makefile]": {
-    "editor.insertSpaces": false,
-  },
-  "[latex]": {
-    "editor.tabSize": 2,
-  },
-  "[json]": {
-    "editor.tabSize": 2,
-  },
-  "[jsonc]": {
-    "editor.tabSize": 2,
-  },
-  "[yaml]": {
-    "editor.tabSize": 2,
+    "editor.insertSpaces": false
   },
   "workbench.settings.editor": "json",
   "workbench.startupEditor": "newUntitledFile",
@@ -32,8 +20,8 @@
         "-file-line-error",
         "-pdf",
         "-outdir=%OUTDIR%",
-        "%DOC%",
-      ],
+        "%DOC%"
+      ]
     },
     {
       "name": "pdflatex",
@@ -42,15 +30,15 @@
         "-synctex=1",
         "-interaction=nonstopmode",
         "-file-line-error",
-        "%DOC%",
-      ],
+        "%DOC%"
+      ]
     },
     {
       "name": "bibtex",
       "command": "bibtex",
       "args": [
-        "%DOCFILE%",
-      ],
+        "%DOCFILE%"
+      ]
     },
     {
       "name": "xelatex",
@@ -59,23 +47,23 @@
         "-synctex=1",
         "-interaction=nonstopmode",
         "-file-line-error",
-        "%DOC%",
-      ],
-    },
+        "%DOC%"
+      ]
+    }
   ],
   "latex-workshop.latex.recipes": [
     {
       "name": "xelatex",
       "tools": [
-        "xelatex",
-      ],
+        "xelatex"
+      ]
     },
     {
       "name": "latexmk",
       "tools": [
         "latexmk"
-      ],
-    },
+      ]
+    }
   ],
   "latex-workshop.view.pdf.viewer": "tab",
   "leetcode.defaultLanguage": "csharp",
@@ -86,8 +74,9 @@
   "leetcode.filePath": {
     "default": {
       "folder": "${language}",
-      "filename": "${id}.${kebab-case-name}.${ext}",
-    },
+      "filename": "${id}.${kebab-case-name}.${ext}"
+    }
   },
-  "leetcode.workspaceFolder": "/home/yqin/source/repos/leetcode"
+  "leetcode.workspaceFolder": "/home/yqin/source/repos/leetcode",
+  "dotnetAcquisitionExtension.sharedExistingDotnetPath": "/usr/sbin/dotnet"
 }

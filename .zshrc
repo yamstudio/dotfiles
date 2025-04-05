@@ -128,20 +128,6 @@ export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
 case `uname` in
   Darwin)
     echo "Applying macOS configuration..."
-    # adds MATLAB to $PATH (newest version if multiple are present)
-    matlab_path=$(find "/Applications" -maxdepth 1 -type d -name "MATLAB_R*.app" 2>/dev/null | sort -r | head -n 1)
-    if [[ ! -z $matlab_path ]]; then
-      _add_to_path "$matlab_path/bin"
-    fi
-
-    # adds CUDA Toolkit to $PATH
-    cuda_path=$(find "/Developer/NVIDIA" -maxdepth 1 -type d -name "CUDA-*" 2>/dev/null | sort -r | head -n 1)
-    if [[ ! -z $cuda_path ]]; then
-      _add_to_path "$cuda_path/bin"
-    fi
-
-    # adds cross compiler to $PATH
-    _add_to_path "/usr/local/cross/bin"
 
     # adds Homebrew executables to $PATH
     _add_to_path "/usr/local/sbin"
@@ -162,36 +148,8 @@ case `uname` in
     fi
 
     export LESS=eFRX
-
-    # TODO: find a better way to determine which machine I'm on
-    case `awk -F= '$1=="ID" { print $2 ;}' /etc/os-release` in
-      # debian|\"debian\")
-      #   echo "Applying Brown CS configuration..."
-
-      #   alias sourcetf="source /course/cs146/public/cs146-env/bin/activate"
-      #   alias sourcetfg="source /course/cs146/public/cs146-gpu-env/bin/activate"
-      #   CS146_BASE_DIR="$HOME/course/cs146"
-      #   if [[ -d $CS146_BASE_DIR ]]; then
-      #     CS146_BRANCH="$(git --git-dir $CS146_BASE_DIR/.git branch | grep \* | cut -d ' ' -f2)"
-      #     CS146_PROJECT_DIR="$CS146_BASE_DIR/$CS146_BRANCH"
-      #     if [[ -d $CS146_PROJECT_DIR ]]; then
-      #       echo "CS146 project directory is $CS146_PROJECT_DIR."
-      #       alias cd146="cd $CS146_PROJECT_DIR; sourcetf"
-      #       alias cd146g="cd $CS146_PROJECT_DIR; sourcetfg"
-      #     fi
-      #   fi
-      #   ;;
-      # rhel|\"rhel\")
-      #   echo "Applying CCV configuration..."
-      #   module load mpi clang tmux cuda/9.0.176 cudnn/7.0 python/3.5.2 tensorflow/1.5.0_gpu_py3
-      #   ;;
-      # centos|\"centos\")
-      #   echo "Applying Azure configuration..."
-      #   ;;
-      arch|\"arch\")
-        echo "Applying WSL configuration..."
-        _add_to_path "/usr/local/cross/bin"
-      esac
+    echo "Applying WSL configuration..."
+    _add_to_path "/home/yqin/.dotnet/tools"
     ;;
 esac
 
