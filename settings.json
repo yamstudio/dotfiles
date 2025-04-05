@@ -8,6 +8,12 @@
   "[makefile]": {
     "editor.insertSpaces": false
   },
+  "[csharp]": {
+    "editor.tabSize": 4
+  },
+  "[java]": {
+    "editor.tabSize": 4
+  },
   "workbench.settings.editor": "json",
   "workbench.startupEditor": "newUntitledFile",
   "latex-workshop.latex.tools": [
