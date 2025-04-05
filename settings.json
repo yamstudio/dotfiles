@@ -66,7 +66,7 @@
     }
   ],
   "latex-workshop.view.pdf.viewer": "tab",
-  "leetcode.defaultLanguage": "csharp",
+  "leetcode.defaultLanguage": "java",
   "leetcode.hint.configWebviewMarkdown": false,
   "leetcode.hint.commentDescription": false,
   "leetcode.hint.setDefaultLanguage": false,
@@ -77,6 +77,6 @@
       "filename": "${id}.${kebab-case-name}.${ext}"
     }
   },
-  "leetcode.workspaceFolder": "/home/yqin/source/repos/leetcode",
+  "leetcode.workspaceFolder": "/home/yqin/repos/leetcode",
   "dotnetAcquisitionExtension.sharedExistingDotnetPath": "/usr/sbin/dotnet"
 }
