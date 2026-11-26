@@ -2,7 +2,7 @@
   editor = vim
   autocrlf = input
 [push]
-  default = matching
+  default = simple
 [filter "lfs"]
   clean = git-lfs clean -- %f
   smudge = git-lfs smudge -- %f
