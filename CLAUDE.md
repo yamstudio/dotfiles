@@ -20,14 +20,16 @@ machine-specific lines such as credential helper paths.
 
 ## Environments
 
-- **WSL (Ubuntu)**: the primary machine and the validation target. Test here.
-- **Two Ubuntu VMs in Azure**: also targets. Keep everything working on plain
-  Ubuntu, not just WSL. Don't assume WSL-only paths or `$WSL_DISTRO_NAME`
-  without a guard.
+- **WSL (Arch Linux)**: the primary machine and the validation target. Test
+  here. Package manager is `pacman`.
+- **Two Ubuntu VMs in Azure**: also targets, with `apt`. The same dotfiles must
+  work on both Arch and Ubuntu, so don't hardcode a package manager, distro
+  paths, or WSL-only assumptions (such as `$WSL_DISTRO_NAME`) without a guard.
+  Passing on WSL does not prove it works on Ubuntu; say so when it matters.
 - **An old MacBook (Homebrew)**: rarely used, probably out of date, and not
   available for testing. Much of the original config was written for it and
   later validated on WSL. macOS-specific config was removed when the repo was
-  refocused on Ubuntu; it is still in git history. Don't reintroduce macOS
+  refocused on Linux; it is still in git history. Don't reintroduce macOS
   code without guarding it (`[[ $OSTYPE == darwin* ]]`) and flagging that it
   is untested.
 

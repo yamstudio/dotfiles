@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 #
-# Sets up dotfiles on Ubuntu (including WSL). Safe to re-run.
+# Sets up dotfiles on Arch Linux (WSL) or Ubuntu. Safe to re-run.
 # Requires git, zsh and vim to be installed already.
 #
 # Usage: setup/install.sh [-n] [-h]
@@ -36,9 +36,14 @@ usage() {
 }
 
 check_prerequisites() {
-  local cmd
+  local cmd install_cmd
+  if (( $+commands[pacman] )); then
+    install_cmd="sudo pacman -S"
+  else
+    install_cmd="sudo apt install"
+  fi
   for cmd in git zsh vim; do
-    (( $+commands[$cmd] )) || die "Please install $cmd first (sudo apt install $cmd)."
+    (( $+commands[$cmd] )) || die "Please install $cmd first ($install_cmd $cmd)."
   done
 }
 
