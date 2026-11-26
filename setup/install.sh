@@ -1,70 +1,116 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
+#
 # Sets up dotfiles on Ubuntu (including WSL). Safe to re-run.
-# Run it from wherever this repo is checked out; it links files from there.
-set -euo pipefail
+# Requires git, zsh and vim to be installed already.
+#
+# Usage: setup/install.sh [-n] [-h]
+#   -n  dry run: print what would change without changing anything
+#   -h  show this help
 
-log() { echo "$@" >&2; }
+emulate -L zsh
+setopt err_exit no_unset pipe_fail
 
-DOTFILES=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
-BACKUP_DIR=$HOME/.dotfiles-backup
-log "[*] Setting up dotfiles from $DOTFILES..."
+readonly OH_MY_ZSH_REPO=https://github.com/ohmyzsh/ohmyzsh.git
+readonly SYNTAX_HL_REPO=https://github.com/zsh-users/zsh-syntax-highlighting.git
 
-for cmd in git zsh vim; do
-  if ! command -v "$cmd" >/dev/null; then
-    log "  [-] Please install $cmd first (sudo apt install $cmd)."
-    exit 1
+# ${(%):-%x} is the path of this file; :A makes it absolute and resolves links.
+readonly SCRIPT=${${(%):-%x}:A}
+readonly DOTFILES=${SCRIPT:h:h}
+readonly BACKUP_DIR=$HOME/.dotfiles-backup
+integer DRY_RUN=0
+
+log() { print -u2 -r -- "$@" }
+die() { log "  [-] $*"; exit 1 }
+
+# Runs a command, or just prints it in dry-run mode.
+run() {
+  if (( DRY_RUN )); then
+    log "  [dry-run] $*"
+  else
+    "$@"
   fi
-done
+}
 
-# Default shell
-zsh_path=$(command -v zsh)
-if [[ $(basename "${SHELL:-}") != zsh ]]; then
-  log "  [*] Changing shell to $zsh_path..."
-  chsh -s "$zsh_path"
-fi
+usage() {
+  sed -n '3,9p' $SCRIPT | sed 's/^# \{0,1\}//' >&2
+}
 
-# Clones a repo unless the target directory already exists.
+check_prerequisites() {
+  local cmd
+  for cmd in git zsh vim; do
+    (( $+commands[$cmd] )) || die "Please install $cmd first (sudo apt install $cmd)."
+  done
+}
+
+# Makes zsh the login shell. Reads the real login shell from the passwd
+# database because $SHELL may be stale or overridden.
+ensure_login_shell() {
+  local zsh_path=$commands[zsh] current
+  current=${$(getent passwd $USER)##*:}
+  # Compare resolved paths: /bin/zsh and /usr/sbin/zsh can be the same binary.
+  if [[ ${current:A} == ${zsh_path:A} ]]; then
+    log "  [+] Login shell is already $zsh_path."
+  else
+    log "  [*] Changing login shell from $current to $zsh_path..."
+    run chsh -s $zsh_path
+  fi
+}
+
+# Shallow-clones a repo unless the target directory already exists.
 get_git() {
   local dir=$1 repo=$2
   if [[ -e $dir ]]; then
     log "  [+] $dir already exists."
   else
     log "  [*] Cloning $repo into $dir..."
-    git clone --depth 1 "$repo" "$dir"
+    run git clone --quiet --depth 1 $repo $dir
   fi
 }
 
-OH_MY_ZSH=$HOME/.oh-my-zsh
-get_git "$OH_MY_ZSH" https://github.com/ohmyzsh/ohmyzsh.git
-get_git "$OH_MY_ZSH/custom/plugins/zsh-syntax-highlighting" \
-  https://github.com/zsh-users/zsh-syntax-highlighting.git
-
-# Links source to target. An existing file is moved to $BACKUP_DIR first.
+# Symlinks target -> src. A pre-existing file is moved into $BACKUP_DIR
+# rather than overwritten.
 link_file() {
-  local source=$1 target=$2
-  if [[ -L $target && $(readlink -f "$target") == "$(readlink -f "$source")" ]]; then
+  local src=$1 target=$2
+  if [[ -L $target && ${target:A} == ${src:A} ]]; then
     log "  [+] $target is already linked."
     return
   fi
   if [[ -e $target || -L $target ]]; then
-    mkdir -p "$BACKUP_DIR"
-    local backup="$BACKUP_DIR/$(basename "$target").$(date +%Y%m%d%H%M%S)"
+    local backup=$BACKUP_DIR/${target:t}.$(date +%Y%m%d%H%M%S)
     log "  [*] Moving existing $target to $backup."
-    mv "$target" "$backup"
+    run mkdir -p -- $BACKUP_DIR
+    run mv -- $target $backup
   fi
-  mkdir -p "$(dirname "$target")"
-  log "  [*] Linking $target -> $source"
-  ln -s "$source" "$target"
+  log "  [*] Linking $target -> $src"
+  run mkdir -p -- ${target:h}
+  run ln -s -- $src $target
 }
 
-link_file "$DOTFILES/.vimrc" "$HOME/.vimrc"
-link_file "$DOTFILES/.zshrc" "$HOME/.zshrc"
-link_file "$DOTFILES/.gitconfig" "$HOME/.gitconfig"
+main() {
+  local -a opt_n opt_h
+  zparseopts -D -E -- n=opt_n h=opt_h || { usage; exit 2 }
+  (( $#opt_h )) && { usage; exit 0 }
+  (( $#opt_n )) && DRY_RUN=1
 
-# VS Code settings for remote (WSL/SSH) sessions, only if VS Code Server exists.
-if [[ -d $HOME/.vscode-server/data/Machine ]]; then
-  link_file "$DOTFILES/settings.json" \
-    "$HOME/.vscode-server/data/Machine/settings.json"
-fi
+  log "[*] Setting up dotfiles from $DOTFILES..."
+  check_prerequisites
+  ensure_login_shell
 
-log "[+] Done. Put anything machine-specific or private in ~/.zshrc.local."
+  local omz=$HOME/.oh-my-zsh
+  get_git $omz $OH_MY_ZSH_REPO
+  get_git $omz/custom/plugins/zsh-syntax-highlighting $SYNTAX_HL_REPO
+
+  link_file $DOTFILES/.vimrc $HOME/.vimrc
+  link_file $DOTFILES/.zshrc $HOME/.zshrc
+  link_file $DOTFILES/.gitconfig $HOME/.gitconfig
+
+  # VS Code settings for remote (WSL/SSH) sessions, if VS Code Server exists.
+  if [[ -d $HOME/.vscode-server/data/Machine ]]; then
+    link_file $DOTFILES/settings.json \
+      $HOME/.vscode-server/data/Machine/settings.json
+  fi
+
+  log "[+] Done. Put machine-specific or private settings in ~/.zshrc.local."
+}
+
+main "$@"
