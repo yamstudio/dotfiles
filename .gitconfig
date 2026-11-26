@@ -15,3 +15,6 @@
   rebase = false
 [url "ssh://git@github.com/"]
   insteadOf = https://github.com/
+[include]
+  # Machine-specific or private settings; silently ignored if missing.
+  path = ~/.gitconfig.local
